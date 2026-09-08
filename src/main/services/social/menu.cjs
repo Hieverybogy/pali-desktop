@@ -1,5 +1,5 @@
 const pets = require("../../../shared/pets.json");
-function socialMenu(client, openPanel, speak, openChat) {
+function socialMenu(client, openPanel, speak, openChat, openAi) {
   const s = client?.state;
   const ready = s?.status === "online";
   const available = ready && !s.pending;
@@ -15,6 +15,12 @@ function socialMenu(client, openPanel, speak, openChat) {
     client.request(message, true);
   };
   const items = [
+    {
+      label: "🤖 問問 Pali",
+      enabled: !!s?.url,
+      click: openAi,
+    },
+    { type: "separator" },
     {
       label: ready ? `在線夥伴（${s.peers.length}）` : "互動服務尚未連線",
       enabled: false,

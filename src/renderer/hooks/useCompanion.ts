@@ -4,6 +4,7 @@ import { initialFrame } from "../lib/defaults";
 export function useCompanion() {
   const [speech, setSpeech] = useState("");
   const [chatPeer, setChatPeer] = useState<Peer | null>(null);
+  const [aiOpen, setAiOpen] = useState(false);
   const [frame, setFrame] = useState(initialFrame),
     [happy, setHappy] = useState(false);
   const reactionTimer = useRef<ReturnType<typeof setTimeout> | undefined>(
@@ -18,6 +19,7 @@ export function useCompanion() {
     const off = window.pali?.subscribe((data) => {
       if ("speech" in data) setSpeech(data.speech);
       else if ("chat" in data) setChatPeer(data.chat?.peer || null);
+      else if ("ai" in data) setAiOpen(data.ai);
       else if ("reaction" in data) react();
       else setFrame(data);
     });
@@ -45,6 +47,7 @@ export function useCompanion() {
     setHappy,
     speech,
     chatPeer,
+    aiOpen,
     react,
     update,
   };

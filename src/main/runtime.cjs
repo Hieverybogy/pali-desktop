@@ -39,11 +39,15 @@ let activityTimer,
   bubble,
   speech = "",
   speechUntil = 0,
+  speechHovered = false,
   chatPeer = null,
   chatOpen = false,
+  aiOpen = false,
   dialogueIndex = 0;
 const { createWindow, send } = require("./windows/factory.cjs");
 const { registerCommands } = require("./ipc/register.cjs");
+// const DEEPSEEK_ENDPOINT = "http://127.0.0.1:7001/api/deepseek";
+const DEEPSEEK_ENDPOINT = "http://47.113.228.135:8060/api/deepseek";
 let pet,
   panel,
   tray,
@@ -62,7 +66,9 @@ function openPetMenu() {
   petMenuOpen = true;
   drag = null;
   target = null;
-  Menu.buildFromTemplate(socialMenu(social, openPanel, speak, openChat)).popup({
+  Menu.buildFromTemplate(
+    socialMenu(social, openPanel, speak, openChat, openAi),
+  ).popup({
     window: pet,
     callback: () => {
       petMenuOpen = false;
@@ -82,6 +88,25 @@ function openChat(peer) {
   bubble.show();
   bubble.focus();
 }
+function openAi() {
+  if (!bubble || bubble.isDestroyed()) return;
+  closeChat();
+  aiOpen = true;
+  speech = "";
+  bubble.setSize(360, 142);
+  bubble.setIgnoreMouseEvents(false);
+  send(bubble, { ai: true });
+  positionBubble();
+  bubble.show();
+  bubble.focus();
+}
+function closeAi() {
+  aiOpen = false;
+  send(bubble, { ai: false });
+  bubble?.setIgnoreMouseEvents(true);
+  bubble?.setSize(260, 96);
+  bubble?.hide();
+}
 function closeChat() {
   chatPeer = null;
   chatOpen = false;
@@ -89,6 +114,62 @@ function closeChat() {
   bubble?.setIgnoreMouseEvents(true);
   bubble?.setSize(260, 96);
   bubble?.hide();
+}
+function setSpeechHover(value) {
+  speechHovered = value;
+  if (!speechHovered && speech && Date.now() >= speechUntil) {
+    speech = "";
+    bubble?.hide();
+  }
+}
+function deepSeekEndpoint() {
+  return DEEPSEEK_ENDPOINT;
+}
+function speechBubbleHeight(text) {
+  const lines = text
+    .split("\n")
+    .reduce(
+      (total, line) => total + Math.max(1, Math.ceil([...line].length / 34)),
+      0,
+    );
+  const available = pet
+    ? screen.getDisplayMatching(pet.getBounds()).workArea.height - 16
+    : 360;
+  return Math.min(available, Math.max(96, 42 + lines * 20));
+}
+async function askDeepSeek(prompt) {
+  const endpoint = deepSeekEndpoint();
+  if (!endpoint) {
+    speak("請先在控制台設定互動伺服器網址～");
+    return;
+  }
+  speak("讓我想一下～", true);
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 30000);
+  try {
+    const response = await fetch(endpoint, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ prompt: prompt.trim() }),
+      signal: controller.signal,
+    });
+    const raw = await response.text();
+    let data;
+    try {
+      data = JSON.parse(raw);
+    } catch {
+      throw new Error("response is not valid JSON");
+    }
+    const reply = data?.result?.reply || data?.reply;
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    if (typeof reply !== "string" || !reply.trim())
+      throw new Error("response does not contain reply");
+    speak(reply.trim());
+  } catch (error) {
+    speak("嗯……現在暫時連不上問答服務，等一下再問我好嗎？");
+  } finally {
+    clearTimeout(timeout);
+  }
 }
 function keepDockHidden() {
   if (process.platform !== "darwin") return;
@@ -118,10 +199,13 @@ function openPanel() {
     "panel",
   );
 }
-function speak(text) {
+function speak(text, waiting = false) {
   closeChat();
+  closeAi();
+  speechHovered = false;
   speech = text;
-  speechUntil = Date.now() + 6500;
+  speechUntil = waiting ? Number.POSITIVE_INFINITY : Date.now() + 6500;
+  bubble?.setSize(360, speechBubbleHeight(text));
   target = null;
   nextWalk = speechUntil + 1500;
   positionBubble();
@@ -131,10 +215,12 @@ function speak(text) {
   send(panel, { reaction: true });
 }
 function positionBubble() {
-  if (!bubble || !pet || (!speech && !chatOpen)) return;
+  if (!bubble || !pet || (!speech && !chatOpen && !aiOpen)) return;
   const b = pet.getBounds(),
     a = screen.getDisplayMatching(b).workArea,
-    width = chatOpen ? 360 : 260;
+    width = speech || chatOpen || aiOpen ? 360 : 260,
+    height =
+      chatOpen || aiOpen ? 142 : speech ? speechBubbleHeight(speech) : 96;
   const x = Math.round(
     Math.max(
       a.x,
@@ -142,9 +228,9 @@ function positionBubble() {
     ),
   );
   const y = Math.round(
-    b.y >= a.y + (chatOpen ? 142 : 96)
-      ? b.y - (chatOpen ? 142 : 88)
-      : Math.min(a.y + a.height - (chatOpen ? 142 : 96), b.y + b.height - 12),
+    b.y >= a.y + height
+      ? b.y - height
+      : Math.min(a.y + a.height - height, b.y + b.height - 12),
   );
   bubble.setPosition(x, y);
 }
@@ -157,7 +243,7 @@ function keepVisible() {
   target = null;
 }
 function tick() {
-  if (speech && Date.now() > speechUntil) {
+  if (speech && !speechHovered && Date.now() > speechUntil) {
     speech = "";
     bubble?.hide();
   }
@@ -494,6 +580,10 @@ function startApplication() {
             if (peer) openChat(peer);
           }
           if (action === "chat-close" && !fromPet) closeChat();
+          if (action === "ai-open" && !fromPet) openAi();
+          if (action === "ai-close" && !fromPet) closeAi();
+          if (action === "ai-ask" && !fromPet) askDeepSeek(value);
+          if (action === "speech-hover" && !fromPet) setSpeechHover(value);
           if (action === "pet-menu" && fromPet) openPetMenu();
           if (
             action === "pet-part" &&

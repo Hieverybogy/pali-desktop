@@ -37,12 +37,17 @@ export type CompanionEvent =
   | Frame
   | { reaction: true }
   | { speech: string }
-  | { chat: { peer: Peer } | null };
+  | { chat: { peer: Peer } | null }
+  | { ai: boolean };
 export type CommandValues = {
   "social-config": { url: string; enabled: boolean; accessKey?: string };
   "social-action": SocialAction;
   "chat-open": string;
   "chat-close": undefined;
+  "ai-open": undefined;
+  "ai-close": undefined;
+  "ai-ask": string;
+  "speech-hover": boolean;
   "drag-start": undefined;
   "drag-end": undefined;
   panel: undefined;

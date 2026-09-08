@@ -48,12 +48,24 @@ function validCommand(action, value) {
       "pet",
       "quit",
       "chat-close",
+      "ai-open",
+      "ai-close",
     ].includes(action)
   )
     return value === undefined;
   if (action === "chat-open")
     return typeof value === "string" && value.length > 0 && value.length <= 64;
-  if (["roaming", "sleeping", "visible", "reminders"].includes(action))
+  if (action === "ai-ask")
+    return (
+      typeof value === "string" &&
+      value.trim().length > 0 &&
+      value.length <= 2000
+    );
+  if (
+    ["roaming", "sleeping", "visible", "reminders", "speech-hover"].includes(
+      action,
+    )
+  )
     return typeof value === "boolean";
   if (action === "character") return isCharacter(value);
   if (action === "size") return SIZES.includes(value);

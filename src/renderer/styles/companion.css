@@ -1,8 +1,9 @@
 .speech-window {
   margin: 5px 8px;
   padding: 13px 16px;
-  max-height: 85px;
-  overflow: hidden;
+  box-sizing: border-box;
+  max-height: calc(100vh - 16px);
+  overflow-y: auto;
   border-radius: 16px;
   background: #fffff9;
   border: 1px solid #e3e9dc;
@@ -10,7 +11,7 @@
   box-shadow: 0 3px 9px #243e3218;
   font-size: 12px;
   line-height: 1.65;
-  text-align: center;
+  text-align: left;
   overflow-wrap: anywhere;
 }
 .speech-chat {

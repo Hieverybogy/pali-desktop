@@ -4,15 +4,54 @@ import type { Peer } from "../../../shared/protocol";
 export function SpeechPage({
   speech,
   chatPeer,
+  aiOpen,
 }: {
   speech: string;
   chatPeer: Peer | null;
+  aiOpen: boolean;
 }) {
   const [text, setText] = useState("");
+  if (aiOpen)
+    return (
+      <form
+        className="speech-chat"
+        onMouseEnter={() => window.pali?.command("speech-hover", true)}
+        onMouseLeave={() => window.pali?.command("speech-hover", false)}
+        onSubmit={(event) => {
+          event.preventDefault();
+          const value = text.trim();
+          if (!value) return;
+          window.pali?.command("ai-ask", value);
+          setText("");
+        }}
+      >
+        <div className="speech-chat-title">問問 Pali</div>
+        <div className="speech-chat-row">
+          <input
+            autoFocus
+            maxLength={2000}
+            value={text}
+            placeholder="想問我什麼？"
+            onChange={(event) => setText(event.target.value)}
+          />
+          <button disabled={!text.trim()}>發送</button>
+        </div>
+        <button
+          className="speech-chat-close"
+          type="button"
+          aria-label="關閉問答"
+          onClick={() => window.pali?.command("ai-close")}
+        >
+          ×
+        </button>
+      </form>
+    );
   if (chatPeer)
     return (
       <form
         className="speech-chat"
+        onMouseEnter={() => window.pali?.command("speech-hover", true)}
+        onMouseLeave={() => window.pali?.command("speech-hover", false)}
         onSubmit={(event) => {
           event.preventDefault();
           const value = text.trim();
@@ -49,7 +88,12 @@ export function SpeechPage({
       </form>
     );
   return (
-    <div className="speech-window" role="status">
+    <div
+      className="speech-window"
+      role="status"
+      onMouseEnter={() => window.pali?.command("speech-hover", true)}
+      onMouseLeave={() => window.pali?.command("speech-hover", false)}
+    >
       {speech}
     </div>
   );

@@ -9,6 +9,12 @@ export function App() {
   if (view === "interaction") return <InteractionPage frame={model.frame} />;
   if (view === "pet") return <PetPage {...model} />;
   if (view === "bubble")
-    return <SpeechPage speech={model.speech} chatPeer={model.chatPeer} />;
+    return (
+      <SpeechPage
+        speech={model.speech}
+        chatPeer={model.chatPeer}
+        aiOpen={model.aiOpen}
+      />
+    );
   return <SettingsPage {...model} />;
 }
