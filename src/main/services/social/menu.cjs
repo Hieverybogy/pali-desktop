@@ -16,7 +16,7 @@ function socialMenu(client, openPanel, speak, openChat, openAi) {
   };
   const items = [
     {
-      label: "🤖 問問 Pali",
+      label: "🤖 問問 Pali ai 機器人",
       enabled: !!s?.url,
       click: openAi,
     },
