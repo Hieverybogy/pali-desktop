@@ -1,4 +1,6 @@
 export type InteractionScene = {
+  perspective: "sender" | "receiver";
+  originX: number;
   action:
     "kiss" | "tea" | "hug" | "cheer" | "ball-invite" | "ball" | "ball-end";
   eventId: string;
@@ -10,6 +12,7 @@ export type InteractionScene = {
   top: number;
 };
 export type Frame = {
+  partReaction?: { part: "hand" | "foot" | "ear"; until: number } | null;
   scene?: InteractionScene | null;
   social?: SocialState;
   character: string;
@@ -30,14 +33,21 @@ export type Frame = {
   state: string;
 };
 
-export type CompanionEvent = Frame | { reaction: true } | { speech: string };
+export type CompanionEvent =
+  | Frame
+  | { reaction: true }
+  | { speech: string }
+  | { chat: { peer: Peer } | null };
 export type CommandValues = {
   "social-config": { url: string; enabled: boolean; accessKey?: string };
   "social-action": SocialAction;
+  "chat-open": string;
+  "chat-close": undefined;
   "drag-start": undefined;
   "drag-end": undefined;
   panel: undefined;
   "pet-menu": undefined;
+  "pet-part": "hand" | "foot" | "ear";
   pet: undefined;
   quit: undefined;
   character: string;
@@ -61,6 +71,7 @@ export interface CompanionBridge {
 
 export type Peer = { id: string; character: string; label: string };
 export type SocialAction =
+  | { type: "chat.send"; to: string; text: string }
   | {
       type: "interaction.send";
       to: string;
@@ -94,4 +105,12 @@ export type SocialState = {
     expiresAt: number;
   } | null;
   effect: { icon: string; until: number } | null;
+  chat: ChatMessage[];
+};
+export type ChatMessage = {
+  id: string;
+  from: string;
+  to: string;
+  text: string;
+  sentAt: number;
 };

@@ -39,6 +39,7 @@ class SocialClient {
     this.pending = new Map();
     this.generation = 0;
     this.attempt = 0;
+    this.unsupportedCharacter = null;
     this.state = {
       status: "offline",
       url: config.url || "",
@@ -51,6 +52,7 @@ class SocialClient {
       notice: "尚未連線",
       pending: false,
       effect: null,
+      chat: [],
     };
   }
   clearSession() {
@@ -62,6 +64,7 @@ class SocialClient {
       invite: null,
       room: null,
       pending: false,
+      chat: [],
     });
   }
   stop() {
@@ -99,13 +102,15 @@ class SocialClient {
     }
     this.socket = ws;
     this.deadline = setTimeout(() => ws.close(), 10000);
+    this.fallbackHello = false;
+    this.helloCharacter = this.character();
     ws.addEventListener("open", () => {
       if (generation === this.generation)
         ws.send(
           JSON.stringify({
             type: "hello",
             protocol: 1,
-            character: this.character(),
+            character: this.helloCharacter,
             accessKey: this.config.accessKey || "",
           }),
         );
@@ -171,11 +176,33 @@ class SocialClient {
     }
   }
   profile() {
+    if (this.character() === this.unsupportedCharacter) return;
     if (this.state.status === "online" && !this.pending.size)
       this.request({ type: "profile.set", character: this.character() });
   }
   receive(m) {
     if (!m || typeof m.type !== "string") return;
+    if (
+      m.type === "error" &&
+      this.state.status === "connecting" &&
+      ["HELLO_REQUIRED", "INVALID_CHARACTER"].includes(m.code)
+    ) {
+      if (!this.fallbackHello && this.helloCharacter !== "penguin") {
+        this.fallbackHello = true;
+        this.unsupportedCharacter = this.helloCharacter;
+        this.socket.send(
+          JSON.stringify({
+            type: "hello",
+            protocol: 1,
+            character: "penguin",
+            accessKey: this.config.accessKey || "",
+          }),
+        );
+      } else {
+        this.state.notice = "伺服器拒絕加入，請確認後端版本與連線設定";
+      }
+      return;
+    }
     if (m.type === "welcome") {
       clearTimeout(this.deadline);
       this.attempt = 0;
@@ -185,6 +212,10 @@ class SocialClient {
         peers: m.peers,
         notice: "已連線，找個夥伴打聲招呼吧",
       });
+      if (this.fallbackHello)
+        this.state.notice =
+          "伺服器尚未支援目前角色，已暫用企鵝身分上線；本機外觀保留，更新後端即可完整同步";
+      else this.unsupportedCharacter = null;
       if (m.self.character !== this.character()) this.profile();
     }
     if (m.type === "presence") this.state.peers = m.peers;
@@ -195,9 +226,16 @@ class SocialClient {
         this.pending.delete(m.requestId);
         this.state.pending = false;
       }
-      if (m.type === "error")
-        this.state.notice = errors[m.code] || `操作未完成：${m.code}`;
-      else if (p) {
+      if (m.type === "error") {
+        if (
+          m.code === "INVALID_CHARACTER" &&
+          p?.message.type === "profile.set"
+        ) {
+          this.unsupportedCharacter = p.message.character;
+          this.state.notice =
+            "伺服器尚未支援新角色，本機外觀已切換，在線身分暫時保持原角色，請更新後端";
+        } else this.state.notice = errors[m.code] || `操作未完成：${m.code}`;
+      } else if (p) {
         if (m.self) this.state.self = m.self;
         if (p.message.type === "interaction.send") {
           this.state.notice = "已轉送給對方";
@@ -208,6 +246,17 @@ class SocialClient {
               from: p.from,
               to: p.to,
             });
+        }
+        if (p.message.type === "chat.send" && p.from) {
+          this.state.chat.push({
+            id: m.messageId || m.requestId,
+            from: p.from.id,
+            to: p.message.to,
+            text: p.message.text.trim(),
+            sentAt: Date.now(),
+          });
+          this.state.chat = this.state.chat.slice(-200);
+          this.state.notice = "訊息已送出";
         }
         if (p.message.type === "ball.invite") {
           this.state.invite = { ...m, outgoing: true };
@@ -233,6 +282,25 @@ class SocialClient {
         this.playInteraction({ ...m, to: { ...this.state.self } });
         this.state.notice = "夥伴來找你互動了";
       }
+    }
+    if (
+      m.type === "chat" &&
+      m.messageId &&
+      m.from?.id &&
+      m.to &&
+      typeof m.text === "string" &&
+      m.text.length <= 1000
+    ) {
+      this.state.chat.push({
+        id: m.messageId,
+        from: m.from.id,
+        to: m.to,
+        text: m.text,
+        sentAt: Number.isFinite(m.sentAt) ? m.sentAt : Date.now(),
+      });
+      this.state.chat = this.state.chat.slice(-200);
+      this.state.notice = "收到夥伴訊息";
+      this.notify(`${m.from.label || "夥伴"}對您說：${m.text}`);
     }
     if (m.type === "ball.invitation") {
       this.state.invite = { ...m, outgoing: false };

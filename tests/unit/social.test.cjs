@@ -174,6 +174,35 @@ test("failed kiss does not play a local scene", (t) => {
   });
   assert.equal(a.scenes.length, 0);
 });
+test("chat messages stay in memory and clear with the session", (t) => {
+  const c = setup(t);
+  c.c.request({ type: "chat.send", to: "you", text: "你好" });
+  const request = c.ws.sent.at(-1);
+  assert.equal(request.type, "chat.send");
+  assert.equal(request.text, "你好");
+  c.ws.message({
+    type: "ack",
+    requestId: request.requestId,
+    messageId: "message-1",
+  });
+  assert.deepEqual(c.c.state.chat[0], {
+    id: "message-1",
+    from: "me",
+    to: "you",
+    text: "你好",
+    sentAt: c.c.state.chat[0].sentAt,
+  });
+  c.ws.message({
+    type: "chat",
+    messageId: "message-2",
+    from: { id: "you", label: "夥伴" },
+    to: "me",
+    text: "你好呀",
+  });
+  assert.equal(c.c.state.chat.length, 2);
+  c.ws.emit("close", { code: 1006 });
+  assert.deepEqual(c.c.state.chat, []);
+});
 
 test("all gifts play on both sides with sender and receiver roles", (t) => {
   for (const action of ["tea", "kiss", "hug", "cheer", "ball"]) {
@@ -223,4 +252,31 @@ test("ball invitation, accepted game, passing and ending create paired scenes wi
   assert.equal(a.scenes.at(-1).from.id, "you");
   a.ws.message({ type: "ball.ended", roomId: "r", reason: "left" });
   assert.equal(a.scenes.at(-1).action, "ball-end");
+});
+
+test("unsupported new character retries hello once without changing local appearance or looping profile", (t) => {
+  const a = setup(t);
+  a.setCharacter("shiro");
+  a.c.configure({
+    url: "https://example.com",
+    enabled: true,
+    accessKey: "secret",
+  });
+  const ws = Socket.instances.at(-1);
+  ws.emit("open");
+  assert.equal(ws.sent[0].character, "shiro");
+  ws.message({ type: "error", code: "HELLO_REQUIRED" });
+  assert.equal(ws.sent[1].type, "hello");
+  assert.equal(ws.sent[1].character, "penguin");
+  assert.equal(ws.sent[1].accessKey, "secret");
+  ws.message({
+    type: "welcome",
+    self: { id: "second", character: "penguin" },
+    peers: [],
+  });
+  assert.equal(a.c.state.status, "online");
+  assert.equal(a.c.character(), "shiro");
+  assert.equal(ws.sent.length, 2);
+  a.c.profile();
+  assert.equal(ws.sent.length, 2);
 });

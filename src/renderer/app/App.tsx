@@ -8,6 +8,7 @@ export function App() {
   const view = new URLSearchParams(location.search).get("view");
   if (view === "interaction") return <InteractionPage frame={model.frame} />;
   if (view === "pet") return <PetPage {...model} />;
-  if (view === "bubble") return <SpeechPage speech={model.speech} />;
+  if (view === "bubble")
+    return <SpeechPage speech={model.speech} chatPeer={model.chatPeer} />;
   return <SettingsPage {...model} />;
 }

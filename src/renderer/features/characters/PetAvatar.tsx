@@ -1,5 +1,6 @@
 import { useEffect, useId, useRef } from "react";
 import type { Frame } from "../../../shared/protocol";
+import { CartoonPet } from "./CartoonPet";
 import { Penguin } from "./Penguin";
 import pets from "../../../shared/pets.json";
 
@@ -12,6 +13,8 @@ export function PetAvatar({
   happy?: boolean;
   thumbnail?: boolean;
 }) {
+  if (["doraemon", "luoxiaohei", "shiro"].includes(frame.character))
+    return <CartoonPet frame={frame} happy={happy} thumbnail={thumbnail} />;
   if (frame.character === "penguin")
     return (
       <div className={thumbnail ? "avatar thumbnail" : "avatar"}>
@@ -53,7 +56,7 @@ function Animal({
     draw();
     return () => cancelAnimationFrame(raf);
   }, [thumbnail]);
-  const bird = kind === "owl",
+  const bird = kind === "owl" || kind === "chick",
     frog = kind === "frog",
     panda = kind === "panda";
   return (
@@ -93,6 +96,15 @@ function Animal({
               fill="none"
               stroke={pet.color}
               strokeWidth="20"
+              strokeLinecap="round"
+            />
+          )}
+          {kind === "mouse" && (
+            <path
+              d="M195 220C249 234 252 178 222 177C205 176 209 198 229 194"
+              fill="none"
+              stroke={pet.color}
+              strokeWidth="12"
               strokeLinecap="round"
             />
           )}
@@ -150,18 +162,29 @@ function Animal({
           {["cat", "fox", "shiba"].includes(kind) && (
             <>
               <path
+                className="ear"
                 d="M80 100L77 40Q106 44 120 78M160 78Q179 45 203 40L202 101"
                 fill={pet.color}
               />
               <path
+                className="ear"
                 d="M88 80L87 53L109 79M170 79L193 53L193 80"
                 fill={kind === "cat" ? "#e3a4a0" : pet.dark}
               />
             </>
           )}
+          {kind === "mouse" && (
+            <>
+              <circle cx="99" cy="73" r="29" fill={pet.color} />
+              <circle cx="181" cy="73" r="29" fill={pet.color} />
+              <circle cx="99" cy="73" r="17" fill={pet.light} />
+              <circle cx="181" cy="73" r="17" fill={pet.light} />
+            </>
+          )}
           {kind === "rabbit" && (
             <>
               <ellipse
+                className="ear"
                 cx="107"
                 cy="63"
                 rx="19"
@@ -170,6 +193,7 @@ function Animal({
                 transform="rotate(-12 107 63)"
               />
               <ellipse
+                className="ear"
                 cx="174"
                 cy="63"
                 rx="19"
@@ -178,6 +202,7 @@ function Animal({
                 transform="rotate(12 174 63)"
               />
               <ellipse
+                className="ear"
                 cx="107"
                 cy="58"
                 rx="8"
@@ -186,6 +211,7 @@ function Animal({
                 transform="rotate(-12 107 58)"
               />
               <ellipse
+                className="ear"
                 cx="174"
                 cy="58"
                 rx="8"
@@ -197,15 +223,17 @@ function Animal({
           )}
           {["panda", "bear"].includes(kind) && (
             <>
-              <circle cx="88" cy="76" r="26" fill={pet.dark} />
-              <circle cx="192" cy="76" r="26" fill={pet.dark} />
+              <circle className="ear" cx="88" cy="76" r="26" fill={pet.dark} />
+              <circle className="ear" cx="192" cy="76" r="26" fill={pet.dark} />
               <circle
+                className="ear"
                 cx="88"
                 cy="76"
                 r="14"
                 fill={panda ? pet.dark : pet.light}
               />
               <circle
+                className="ear"
                 cx="192"
                 cy="76"
                 r="14"
@@ -215,6 +243,7 @@ function Animal({
           )}
           {bird && (
             <path
+              className="ear"
               d="M81 101L73 52L116 76M164 76L207 52L199 101"
               fill={pet.dark}
             />
@@ -222,11 +251,15 @@ function Animal({
           {kind === "dragon" && (
             <>
               <path
+                className="ear"
                 d="M93 86Q77 63 94 42L111 75M169 75L186 42Q203 63 187 86"
                 fill={pet.accent}
               />
               <path d="M127 75L140 50L153 75" fill={pet.dark} />
             </>
+          )}
+          {kind === "chick" && (
+            <path d="M126 68L140 40L146 62L164 45L160 78Z" fill={pet.dark} />
           )}
           <path
             className="wing wing-left"
@@ -240,7 +273,7 @@ function Animal({
           />
           <path
             d="M78 155C65 116 77 75 110 68Q140 56 170 68C203 75 215 116 202 155Q223 207 197 231Q178 246 140 244Q102 246 83 231Q57 207 78 155"
-            fill={`url(#${uid}-coat)`}
+            fill={panda ? pet.light : `url(#${uid}-coat)`}
           />
           <ellipse cx="140" cy="195" rx="49" ry="39" fill={pet.light} />
           {frog && (
@@ -315,6 +348,16 @@ function Animal({
               <path d="M126 70L130 84M140 66L140 82M154 70L150 84" />
             </g>
           )}
+          {kind === "mouse" && (
+            <g
+              fill="none"
+              stroke={pet.dark}
+              strokeWidth="4"
+              strokeLinecap="round"
+            >
+              <path d="M91 140L66 134M91 148L64 150M189 140L214 134M189 148L216 150" />
+            </g>
+          )}
           {kind === "shiba" && (
             <g fill={pet.light}>
               <ellipse
@@ -346,7 +389,7 @@ function Animal({
           <g
             className="eye-closed"
             fill="none"
-            stroke={panda ? "#fff5df" : "#34484c"}
+            stroke={panda ? "#f7f0df" : "#34484c"}
             strokeWidth="4"
             strokeLinecap="round"
           >

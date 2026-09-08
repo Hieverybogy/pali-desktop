@@ -232,3 +232,118 @@
     transform: none;
   }
 }
+.touch-hand .character {
+  animation: touch-body-sway 0.6s ease-in-out 3;
+}
+.touch-hand .wing {
+  transform-box: view-box;
+}
+.touch-hand .wing-left {
+  transform-origin: 88px 148px;
+  animation: touch-wave-left 0.6s ease-in-out 3;
+}
+.touch-hand .wing-right {
+  transform-origin: 192px 148px;
+  animation: touch-wave-right 0.6s ease-in-out 3;
+}
+.touch-foot .character {
+  animation: tickle-hop 0.6s ease-in-out 3;
+}
+.touch-foot .wing-right {
+  animation: none;
+}
+.touch-foot .foot {
+  transform-box: fill-box;
+  transform-origin: 50% 15%;
+  translate: none;
+}
+.touch-foot .foot.left {
+  animation: tickle-foot-left 0.6s ease-in-out 3;
+}
+.touch-foot .foot.right {
+  animation: tickle-foot-right 0.6s ease-in-out 3;
+}
+.touch-ear .character {
+  animation: curious-tilt 0.9s ease-in-out 2;
+}
+.touch-ear .wing-right,
+.touch-ear .ear {
+  animation: none;
+}
+@keyframes touch-body-sway {
+  0%,
+  100% {
+    transform: none;
+  }
+  50% {
+    transform: rotate(-1.5deg);
+  }
+}
+@keyframes touch-wave-left {
+  0%,
+  100% {
+    transform: rotate(0);
+  }
+  50% {
+    transform: rotate(12deg);
+  }
+}
+@keyframes touch-wave-right {
+  0%,
+  100% {
+    transform: rotate(0);
+  }
+  50% {
+    transform: rotate(-12deg);
+  }
+}
+@keyframes tickle-hop {
+  0%,
+  100% {
+    transform: none;
+  }
+  50% {
+    transform: translateY(-3px) rotate(1.5deg);
+  }
+}
+/* Individual rotate preserves each SVG foot's original resting transform. */
+@keyframes tickle-foot-left {
+  0%,
+  100% {
+    rotate: 0deg;
+  }
+  50% {
+    rotate: -7deg;
+  }
+}
+@keyframes tickle-foot-right {
+  0%,
+  100% {
+    rotate: 0deg;
+  }
+  50% {
+    rotate: 7deg;
+  }
+}
+@keyframes curious-tilt {
+  0%,
+  100% {
+    transform: none;
+  }
+  40% {
+    transform: rotate(-4deg);
+  }
+  70% {
+    transform: rotate(2deg);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .touch-hand .character,
+  .touch-hand .wing,
+  .touch-foot .foot,
+  .touch-foot .character,
+  .touch-ear .character,
+  .touch-ear .ear {
+    animation: none;
+  }
+}

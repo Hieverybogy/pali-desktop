@@ -29,6 +29,7 @@ let interactionWindow,
   currentScene = null;
 const interactionQueue = [];
 let petMenuOpen = false;
+let partReaction = null;
 const { Shake } = require("./services/shake.cjs");
 const shake = new Shake();
 let dizzyUntil = 0;
@@ -38,6 +39,8 @@ let activityTimer,
   bubble,
   speech = "",
   speechUntil = 0,
+  chatPeer = null,
+  chatOpen = false,
   dialogueIndex = 0;
 const { createWindow, send } = require("./windows/factory.cjs");
 const { registerCommands } = require("./ipc/register.cjs");
@@ -59,13 +62,33 @@ function openPetMenu() {
   petMenuOpen = true;
   drag = null;
   target = null;
-  Menu.buildFromTemplate(socialMenu(social, openPanel, speak)).popup({
+  Menu.buildFromTemplate(socialMenu(social, openPanel, speak, openChat)).popup({
     window: pet,
     callback: () => {
       petMenuOpen = false;
       nextWalk = Date.now() + 3000;
     },
   });
+}
+function openChat(peer) {
+  if (!bubble || bubble.isDestroyed()) return;
+  chatPeer = peer;
+  chatOpen = true;
+  speech = "";
+  bubble.setSize(360, 142);
+  bubble.setIgnoreMouseEvents(false);
+  send(bubble, { chat: { peer } });
+  positionBubble();
+  bubble.show();
+  bubble.focus();
+}
+function closeChat() {
+  chatPeer = null;
+  chatOpen = false;
+  send(bubble, { chat: null });
+  bubble?.setIgnoreMouseEvents(true);
+  bubble?.setSize(260, 96);
+  bubble?.hide();
 }
 function keepDockHidden() {
   if (process.platform !== "darwin") return;
@@ -96,6 +119,7 @@ function openPanel() {
   );
 }
 function speak(text) {
+  closeChat();
   speech = text;
   speechUntil = Date.now() + 6500;
   target = null;
@@ -107,16 +131,20 @@ function speak(text) {
   send(panel, { reaction: true });
 }
 function positionBubble() {
-  if (!bubble || !pet || !speech) return;
+  if (!bubble || !pet || (!speech && !chatOpen)) return;
   const b = pet.getBounds(),
-    a = screen.getDisplayMatching(b).workArea;
+    a = screen.getDisplayMatching(b).workArea,
+    width = chatOpen ? 360 : 260;
   const x = Math.round(
-    Math.max(a.x, Math.min(b.x + b.width / 2 - 130, a.x + a.width - 260)),
+    Math.max(
+      a.x,
+      Math.min(b.x + b.width / 2 - width / 2, a.x + a.width - width),
+    ),
   );
   const y = Math.round(
-    b.y >= a.y + 96
-      ? b.y - 88
-      : Math.min(a.y + a.height - 96, b.y + b.height - 12),
+    b.y >= a.y + (chatOpen ? 142 : 96)
+      ? b.y - (chatOpen ? 142 : 88)
+      : Math.min(a.y + a.height - (chatOpen ? 142 : 96), b.y + b.height - 12),
   );
   bubble.setPosition(x, y);
 }
@@ -198,14 +226,21 @@ function tick() {
       const dx = target.x - bounds.x,
         dy = target.y - bounds.y,
         d = Math.hypot(dx, dy);
-      if (d < 3) {
+      if (
+        !Number.isFinite(target.x) ||
+        !Number.isFinite(target.y) ||
+        !Number.isFinite(d)
+      ) {
+        target = null;
+      } else if (d < 3) {
         target = null;
         nextWalk = now + 4000 + Math.random() * 7000;
-      } else
-        pet.setPosition(
-          Math.round(bounds.x + (dx / d) * Math.min(d, 65 * dt)),
-          Math.round(bounds.y + (dy / d) * Math.min(d, 65 * dt)),
-        );
+      } else {
+        const x = Math.round(bounds.x + (dx / d) * Math.min(d, 65 * dt)),
+          y = Math.round(bounds.y + (dy / d) * Math.min(d, 65 * dt));
+        if (Number.isFinite(x) && Number.isFinite(y)) pet.setPosition(x, y);
+        else target = null;
+      }
     }
   }
   bounds = pet.getBounds();
@@ -244,6 +279,9 @@ function tick() {
       interactionWindow.setBounds(area);
       currentScene = {
         ...event,
+        perspective:
+          event.from.id === social.state.self?.id ? "sender" : "receiver",
+        originX: bounds.x - area.x,
         startedAt: now,
         size,
         targetX: Math.max(size, Math.min(bounds.x - area.x, area.width - size)),
@@ -258,6 +296,8 @@ function tick() {
   }
   const data = {
     scene: currentScene,
+    partReaction:
+      partReaction && partReaction.until > now ? partReaction : null,
     ...settings,
     social: social?.state,
     activity: activity.snapshot(now),
@@ -320,7 +360,7 @@ function startApplication() {
           frame: false,
           hasShadow: false,
           resizable: false,
-          focusable: false,
+          focusable: true,
           alwaysOnTop: true,
           skipTaskbar: true,
           show: false,
@@ -408,7 +448,7 @@ function startApplication() {
       );
       tray.on("click", openPanel);
       const disposeCommands = registerCommands(
-        () => ({ pet, panel }),
+        () => ({ pet, panel, bubble }),
         (action, value, fromPet) => {
           if (
             action === "drag-start" &&
@@ -442,7 +482,27 @@ function startApplication() {
             }
           }
           if (action === "social-action" && !fromPet) social.request(value);
+          if (action === "chat-open" && !fromPet) {
+            const peer = social?.state.peers.find((item) => item.id === value);
+            if (peer) openChat(peer);
+          }
+          if (action === "chat-close" && !fromPet) closeChat();
           if (action === "pet-menu" && fromPet) openPetMenu();
+          if (
+            action === "pet-part" &&
+            fromPet &&
+            !currentScene &&
+            Date.now() >= dizzyUntil + 300
+          ) {
+            partReaction = { part: value, until: Date.now() + 1800 };
+            speak(
+              value === "hand"
+                ? "嗨～跟你揮揮手！"
+                : value === "foot"
+                  ? "嘿嘿，腳底癢癢的！"
+                  : "嗯？你在叫我嗎？",
+            );
+          }
           if (action === "panel") openPanel();
           if (action === "roaming" && typeof value === "boolean") {
             settings.roaming = value;

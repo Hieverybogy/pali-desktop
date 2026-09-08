@@ -1,5 +1,5 @@
 const pets = require("../../../shared/pets.json");
-function socialMenu(client, openPanel, speak) {
+function socialMenu(client, openPanel, speak, openChat) {
   const s = client?.state;
   const ready = s?.status === "online";
   const available = ready && !s.pending;
@@ -37,7 +37,6 @@ function socialMenu(client, openPanel, speak) {
             enabled: available,
             click: send({ type: "interaction.send", to: peer.id, action }),
           })),
-          { type: "separator" },
           {
             label: "🏓 一起打球",
             enabled: available,
@@ -46,6 +45,12 @@ function socialMenu(client, openPanel, speak) {
               to: peer.id,
               action: "ball",
             }),
+          },
+          { type: "separator" },
+          {
+            label: "💬 聊天",
+            enabled: ready,
+            click: () => openChat(peer),
           },
         ],
       });

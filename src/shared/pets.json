@@ -98,11 +98,11 @@
     "description": "吃飽、睡好，煩惱慢慢變小。",
     "detail": "陪你用自己的速度過日子。",
     "traits": ["慢生活專家", "佛系陪伴"],
-    "color": "#f0eee4",
-    "dark": "#39454b",
-    "light": "#fffdf3",
-    "accent": "#8da976",
-    "background": "#eaf0e4",
+    "color": "#d9d9d1",
+    "dark": "#292d2e",
+    "light": "#fffaf0",
+    "accent": "#719b68",
+    "background": "#e8f0e2",
     "hitRegions": [
       [88, 76, 25, 25],
       [192, 76, 25, 25]
@@ -181,6 +181,96 @@
       [60, 155, 13, 20],
       [220, 155, 13, 20],
       [226, 221, 23, 13]
+    ]
+  },
+  {
+    "id": "mouse",
+    "name": "米粒",
+    "english": "NIBBLE",
+    "species": "小老鼠",
+    "description": "一隻喜歡把日子過得香香的小老鼠。",
+    "detail": "耳朵靈敏，總能第一時間聽見你的聲音。",
+    "traits": ["靈巧可愛", "點心偵察員"],
+    "color": "#b9a7a4",
+    "dark": "#806b6b",
+    "light": "#fff0ed",
+    "accent": "#d3919b",
+    "background": "#f3e7e8",
+    "hitRegions": [
+      [85, 59, 27, 28],
+      [168, 59, 27, 28],
+      [222, 190, 30, 30]
+    ]
+  },
+  {
+    "id": "chick",
+    "name": "黃啾",
+    "english": "SUNNY",
+    "species": "小黃雞",
+    "description": "把陽光叼到你身邊的小小旅伴。",
+    "detail": "每天啾一聲，提醒你抬頭看看好天氣。",
+    "traits": ["陽光滿滿", "啾啾提醒員"],
+    "color": "#f3c94f",
+    "dark": "#d69e32",
+    "light": "#fff4b8",
+    "accent": "#e58b45",
+    "background": "#fff4d6",
+    "hitRegions": [
+      [93, 44, 20, 34],
+      [167, 44, 20, 34],
+      [128, 137, 25, 24]
+    ]
+  },
+  {
+    "id": "doraemon",
+    "name": "哆啦 A 夢",
+    "english": "DORAEMON",
+    "species": "機器貓",
+    "description": "口袋裡裝著驚喜，陪你度過每一天。",
+    "detail": "會看著游標，也會和朋友一起玩。",
+    "traits": ["經典角色", "暖心陪伴"],
+    "color": "#139cdd",
+    "dark": "#0879b4",
+    "light": "#ffffff",
+    "accent": "#ef9375",
+    "background": "#e4f5ff",
+    "hitRegions": [[140, 72, 72, 40]]
+  },
+  {
+    "id": "luoxiaohei",
+    "name": "羅小黑",
+    "english": "LUO XIAOHEI",
+    "species": "小黑貓",
+    "description": "安靜地蹲在身邊，偶爾伸出小爪子。",
+    "detail": "會看著游標，也會和朋友一起玩。",
+    "traits": ["經典角色", "暖心陪伴"],
+    "color": "#252b30",
+    "dark": "#151c20",
+    "light": "#a8dacc",
+    "accent": "#ef9375",
+    "background": "#e5f1ed",
+    "hitRegions": [
+      [85, 63, 18, 30],
+      [195, 63, 18, 30],
+      [224, 206, 25, 28]
+    ]
+  },
+  {
+    "id": "shiro",
+    "name": "小白",
+    "english": "SHIRO",
+    "species": "棉花糖小狗",
+    "description": "軟綿綿的棉花糖，也是你的小小守護者。",
+    "detail": "會看著游標，也會和朋友一起玩。",
+    "traits": ["經典角色", "暖心陪伴"],
+    "color": "#fffdf7",
+    "dark": "#bfc5c7",
+    "light": "#ffffff",
+    "accent": "#ef9375",
+    "background": "#f4efe4",
+    "hitRegions": [
+      [66, 112, 22, 33],
+      [214, 112, 22, 33]
     ]
   }
 ]

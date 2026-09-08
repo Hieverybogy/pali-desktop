@@ -25,14 +25,38 @@ export function InteractionPage({ frame }: { frame: Frame }) {
   const scene = scenes[s.action];
   const kissing = elapsed >= 2000 && elapsed < 4300;
   const style = {
+    "--origin": `${s.originX}px`,
     "--size": `${s.size}px`,
     "--target": `${s.targetX}px`,
+    "--exit-distance": `${Math.min(s.size * 0.48, Math.max(0, s.originX - 4))}px`,
     "--approach": `${s.targetX - s.size * 0.65}px`,
     "--top": `${s.top}px`,
   } as CSSProperties;
+  const sender = s.perspective === "sender";
+  if (s.perspective === "sender")
+    return (
+      <main
+        className="interaction-stage outgoing-scene"
+        key={s.eventId}
+        style={style}
+        aria-label="夥伴出門拜訪後回家"
+      >
+        <div className="sender-door" aria-hidden="true" />
+        <div className="outgoing-pet">
+          <PetAvatar
+            frame={{
+              ...frame,
+              character: s.from.character,
+              state: "walking",
+              mouse: { x: elapsed < 2000 ? 0 : 280, y: 120 },
+            }}
+          />
+        </div>
+      </main>
+    );
   return (
     <main
-      className={`interaction-stage action-${s.action} ${kissing ? "performing" : ""}`}
+      className={`interaction-stage action-${s.action} ${sender ? "sender" : ""} ${kissing ? "performing" : ""}`}
       key={s.eventId}
       style={style}
       aria-label={`兩位夥伴${scene.title}`}
@@ -42,7 +66,7 @@ export function InteractionPage({ frame }: { frame: Frame }) {
           <PetAvatar
             frame={{
               ...frame,
-              character: s.from.character,
+              character: sender ? frame.character : s.from.character,
               state: kissing ? "idle" : "walking",
               mouse: { x: 280, y: 120 },
             }}
@@ -50,17 +74,20 @@ export function InteractionPage({ frame }: { frame: Frame }) {
           />
         </div>
       </div>
-      <div className="kiss-host">
-        <PetAvatar
-          frame={{
-            ...frame,
-            character: s.to.character,
-            state: "idle",
-            mouse: { x: 0, y: 120 },
-          }}
-          happy={kissing}
-        />
-      </div>
+      {sender && <div className="sender-door" aria-hidden="true" />}
+      {!sender && (
+        <div className="kiss-host">
+          <PetAvatar
+            frame={{
+              ...frame,
+              character: s.to.character,
+              state: "idle",
+              mouse: { x: 0, y: 120 },
+            }}
+            happy={kissing}
+          />
+        </div>
+      )}
       <div className="kiss-hearts">{scene.icon}</div>
       {s.action === "ball" && (
         <>
@@ -71,11 +98,17 @@ export function InteractionPage({ frame }: { frame: Frame }) {
       )}
 
       <div className="kiss-caption">
-        {kissing
-          ? scene.text
-          : elapsed < 2000
-            ? "你的夥伴來找你了"
-            : "下次再來找你玩～"}
+        {sender
+          ? kissing
+            ? "正在和夥伴互動～"
+            : elapsed < 2000
+              ? "你的夥伴出發去找對方了"
+              : "你的夥伴回來了～"
+          : kissing
+            ? scene.text
+            : elapsed < 2000
+              ? "你的夥伴來找你了"
+              : "下次再來找你玩～"}
       </div>
     </main>
   );

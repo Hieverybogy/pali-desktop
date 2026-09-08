@@ -152,6 +152,12 @@ export function SocialPanel({ social: s }: { social?: SocialState }) {
               >
                 🏓 一起打球
               </button>
+              <button
+                disabled={!online}
+                onClick={() => window.pali?.command("chat-open", p.id)}
+              >
+                💬 聊天
+              </button>
             </div>
           </article>
         ))}

@@ -41,7 +41,7 @@ export function CharacterPicker({
         <div>
           <div className="eyebrow">MEET YOUR LITTLE FRIENDS</div>
           <h2>今天，想和誰一起？</h2>
-          <p>10 位小夥伴，點選即可帶到桌面。</p>
+          <p>{pets.length} 位小夥伴，點選即可帶到桌面。</p>
         </div>
         <button
           className="picker-close"

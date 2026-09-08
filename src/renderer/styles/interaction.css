@@ -23,6 +23,52 @@
   animation: kiss-visit 6.5s linear both;
   z-index: 2;
 }
+.sender .kiss-visitor {
+  left: var(--target);
+  animation-name: sender-leave-return;
+}
+.sender-door {
+  position: absolute;
+  left: max(4px, calc(var(--target) - var(--size) * 0.48));
+  top: calc(var(--top) + var(--size) * 0.06);
+  width: calc(var(--size) * 0.48);
+  height: calc(var(--size) * 0.88);
+  border: max(2px, calc(var(--size) * 0.025)) solid #8f604d;
+  border-bottom: 0;
+  border-radius: 5px 5px 0 0;
+  background: #463545;
+  opacity: 0;
+  z-index: 1;
+  animation: sender-door-appear 6.5s ease-out both;
+}
+.sender-door::after {
+  position: absolute;
+  inset: 2px 2px 0 auto;
+  width: 82%;
+  border: max(2px, calc(var(--size) * 0.025)) solid #c88965;
+  border-bottom: 0;
+  border-radius: 3px 3px 0 0;
+  background: #b86f59;
+  content: "";
+  transform-origin: left center;
+  animation: sender-door-open 6.5s ease-out both;
+}
+.outgoing-pet {
+  position: absolute;
+  left: var(--origin);
+  top: var(--top);
+  width: var(--size);
+  height: var(--size);
+  z-index: 2;
+  animation: outgoing-leave-return 6.5s ease-in-out both;
+}
+.outgoing-pet .penguin {
+  width: 100%;
+  height: 100%;
+}
+.outgoing-scene .sender-door {
+  left: max(4px, calc(var(--origin) - var(--size) * 0.48));
+}
 .kiss-lean {
   width: 100%;
   height: 100%;
@@ -61,6 +107,72 @@
     transform: translateX(calc(-1 * var(--size)));
   }
 }
+@keyframes sender-leave-return {
+  0%,
+  18% {
+    transform: translateX(0);
+  }
+  36% {
+    opacity: 1;
+    transform: translateX(calc(-1 * var(--exit-distance)));
+  }
+  44%,
+  67% {
+    opacity: 0;
+    transform: translateX(calc(-1 * var(--exit-distance)));
+  }
+  74% {
+    opacity: 1;
+    transform: translateX(calc(-1 * var(--exit-distance)));
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+@keyframes sender-door-appear {
+  0%,
+  10% {
+    opacity: 0;
+  }
+  18%,
+  100% {
+    opacity: 1;
+  }
+}
+@keyframes sender-door-open {
+  0%,
+  14% {
+    transform: perspective(200px) rotateY(0);
+  }
+  28%,
+  100% {
+    transform: perspective(200px) rotateY(-72deg);
+  }
+}
+@keyframes outgoing-leave-return {
+  0%,
+  16% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  34% {
+    opacity: 1;
+    transform: translateX(calc(-1 * var(--exit-distance)));
+  }
+  42%,
+  68% {
+    opacity: 0;
+    transform: translateX(calc(-1 * var(--exit-distance)));
+  }
+  75% {
+    opacity: 1;
+    transform: translateX(calc(-1 * var(--exit-distance)));
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
 @keyframes kiss-lean {
   0%,
   30%,
@@ -94,6 +206,22 @@
   .kiss-visitor {
     animation: none;
     transform: translateX(var(--approach));
+  }
+  .sender .kiss-visitor {
+    transform: translateX(0);
+  }
+  .outgoing-pet {
+    animation: none;
+    opacity: 1;
+    transform: translateX(0);
+  }
+  .sender-door {
+    opacity: 1;
+    animation: none;
+  }
+  .sender-door::after {
+    animation: none;
+    transform: perspective(200px) rotateY(-72deg);
   }
   .kiss-lean {
     animation: none;
@@ -247,5 +375,95 @@
   .interaction-stage .wing-right,
   .interaction-stage .rally-ball {
     animation: none;
+  }
+}
+.outgoing-pet {
+  position: absolute;
+  top: var(--top);
+  left: var(--origin);
+  width: var(--size);
+  height: var(--size);
+  animation: outgoing-visit 6.5s linear both;
+}
+@keyframes outgoing-visit {
+  0%,
+  100% {
+    transform: translateX(var(--origin));
+  }
+  30%,
+  70% {
+    transform: translateX(calc(-1 * var(--size)));
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .outgoing-pet {
+    animation: none;
+    transform: translateX(var(--origin));
+  }
+}
+
+/* Keep the door beside the pet's original desktop position. */
+.outgoing-scene .sender-door {
+  left: max(4px, calc(var(--origin) - var(--size) * 0.48));
+  animation: outgoing-door-visible 6.5s ease-in-out both;
+}
+.outgoing-scene .sender-door::after {
+  animation: outgoing-door-cycle 6.5s ease-in-out both;
+}
+.outgoing-scene .outgoing-pet {
+  z-index: 2;
+  animation-name: outgoing-through-door;
+}
+@keyframes outgoing-through-door {
+  0%,
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  27% {
+    opacity: 1;
+    transform: translateX(calc(-1 * var(--exit-distance)));
+  }
+  35%,
+  65% {
+    opacity: 0;
+    transform: translateX(calc(-1 * var(--exit-distance)));
+  }
+  73% {
+    opacity: 1;
+    transform: translateX(calc(-1 * var(--exit-distance)));
+  }
+}
+@keyframes outgoing-door-cycle {
+  0%,
+  5% {
+    transform: perspective(200px) rotateY(0);
+  }
+  18%,
+  100% {
+    transform: perspective(200px) rotateY(-78deg);
+  }
+}
+@keyframes outgoing-door-visible {
+  0%,
+  100% {
+    opacity: 0;
+  }
+  5%,
+  95% {
+    opacity: 1;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .outgoing-scene .sender-door,
+  .outgoing-scene .sender-door::after,
+  .outgoing-scene .outgoing-pet {
+    animation: none;
+  }
+  .outgoing-scene .sender-door {
+    opacity: 1;
+  }
+  .outgoing-scene .outgoing-pet {
+    transform: translateX(0);
   }
 }
