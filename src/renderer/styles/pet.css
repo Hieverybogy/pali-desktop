@@ -13,6 +13,7 @@
 .pet-window .penguin {
   width: 100%;
   height: 100%;
+  transition: transform 180ms ease-out;
 }
 .pet-bubble {
   position: absolute;
@@ -219,6 +220,9 @@
   }
 }
 @media (prefers-reduced-motion: reduce) {
+  .pet-window .penguin {
+    transition: none;
+  }
   .shaking .character,
   .dizzy-stars {
     animation: none;

@@ -12,6 +12,12 @@ export function CartoonPet({
   const eyes = useRef<SVGGElement>(null),
     aim = useRef(frame.mouse);
   aim.current = frame.mouse;
+  const followX = thumbnail
+    ? 0
+    : Math.max(-4, Math.min(4, (frame.mouse.x - 140) * 0.016));
+  const followY = thumbnail
+    ? 0
+    : Math.max(-3, Math.min(3, (frame.mouse.y - 130) * 0.012));
   useEffect(() => {
     if (thumbnail) return;
     let raf = 0;
@@ -38,6 +44,7 @@ export function CartoonPet({
       <svg
         viewBox="0 0 280 280"
         className={`penguin ${frame.state} ${happy ? "happy" : ""}`}
+        style={{ transform: `translate(${followX}px, ${followY}px)` }}
         aria-label={dora ? "哆啦 A 夢" : black ? "羅小黑" : "小白"}
       >
         <ellipse

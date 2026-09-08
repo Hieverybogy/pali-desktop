@@ -412,11 +412,18 @@ function startApplication() {
       pet.on("blur", () => {
         drag = null;
       });
-      const icon = nativeImage.createFromPath(
-        path.join(__dirname, "../../assets/tray.png"),
-      );
+      const iconPath = path.join(app.getAppPath(), "assets", "tray.png");
+      let icon = nativeImage.createFromPath(iconPath);
+      if (icon.isEmpty()) {
+        console.error("Unable to load tray icon:", iconPath);
+        icon = nativeImage.createFromPath(
+          path.join(app.getAppPath(), "assets", "dock.png"),
+        );
+      }
+      if (!icon.isEmpty()) icon = icon.resize({ width: 18, height: 18 });
       if (process.platform === "darwin") icon.setTemplateImage(true);
       tray = new Tray(icon);
+      if (process.platform === "darwin") tray.setTitle("Pali");
       tray.setToolTip("Pali · 伴游");
       tray.setContextMenu(
         Menu.buildFromTemplate([

@@ -13,6 +13,12 @@ export function Penguin({
   const eyes = useRef<SVGGElement>(null);
   const aim = useRef(frame.mouse);
   aim.current = frame.mouse;
+  const followX = thumbnail
+    ? 0
+    : Math.max(-5, Math.min(5, (frame.mouse.x - 140) * 0.02));
+  const followY = thumbnail
+    ? 0
+    : Math.max(-3, Math.min(3, (frame.mouse.y - 130) * 0.014));
   useEffect(() => {
     if (thumbnail) return;
     let id = 0,
@@ -34,6 +40,7 @@ export function Penguin({
   return (
     <svg
       className={`penguin ${frame.state} ${happy ? "happy" : ""}`}
+      style={{ transform: `translate(${followX}px, ${followY}px)` }}
       viewBox="0 0 280 280"
       aria-label="Pali 小企鵝"
     >

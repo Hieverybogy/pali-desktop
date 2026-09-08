@@ -37,6 +37,12 @@ function Animal({
     uid = useId(),
     eyes = useRef<SVGGElement>(null),
     aim = useRef(frame.mouse);
+  const followX = thumbnail
+    ? 0
+    : Math.max(-5, Math.min(5, (frame.mouse.x - 140) * 0.018));
+  const followY = thumbnail
+    ? 0
+    : Math.max(-3, Math.min(3, (frame.mouse.y - 130) * 0.012));
   aim.current = frame.mouse;
   useEffect(() => {
     if (thumbnail) return;
@@ -64,6 +70,7 @@ function Animal({
       <svg
         viewBox="0 0 280 280"
         className={`penguin ${frame.state} ${happy ? "happy" : ""}`}
+        style={{ transform: `translate(${followX}px, ${followY}px)` }}
         aria-label={`Pali ${pet.species}${pet.name}`}
       >
         <defs>
