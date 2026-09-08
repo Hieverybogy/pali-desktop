@@ -1,0 +1,131 @@
+.social-panel {
+  margin-top: 32px;
+  padding-top: 12px;
+  border-top: 1px solid #e5e8ec;
+}
+.social-connect {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  padding: 20px;
+  border-radius: 18px;
+  background: white;
+}
+.social-connect label {
+  display: grid;
+  gap: 8px;
+  font-size: 12px;
+  color: #68716b;
+}
+.social-connect input:not([type="checkbox"]) {
+  width: 100%;
+  box-sizing: border-box;
+  border: 1px solid #dce2de;
+  border-radius: 9px;
+  padding: 11px;
+  background: #fafcfb;
+  font: inherit;
+  color: #293c34;
+}
+.social-connect p {
+  grid-column: 1 / -1;
+  margin: 0;
+  font-size: 12px;
+  color: #7c857f;
+}
+.social-connect .social-clear {
+  display: flex;
+  align-items: center;
+}
+.social-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+.social-actions button {
+  padding: 9px 13px;
+  border: 1px solid #dbe5dd;
+  background: #f0f6f1;
+  color: #41624c;
+  border-radius: 9px;
+  cursor: pointer;
+  font: inherit;
+  font-size: 12px;
+}
+.social-actions button:hover:enabled {
+  background: #dfedde;
+}
+.social-actions button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+.social-notice {
+  color: #466450;
+  font-size: 13px;
+  line-height: 1.6;
+}
+.social-self {
+  color: #87928a;
+  font-size: 11px;
+}
+.social-peers {
+  display: grid;
+  gap: 12px;
+}
+.social-peer,
+.social-ball {
+  padding: 18px;
+  border: 1px solid #e3e9e4;
+  border-radius: 16px;
+  background: white;
+}
+.social-peer strong,
+.social-ball strong {
+  font-size: 14px;
+}
+.social-peer > span {
+  float: right;
+  color: #72947a;
+  font-size: 11px;
+}
+.social-peer .social-actions {
+  margin-top: 14px;
+}
+.social-ball {
+  background: #fff7e9;
+  margin-bottom: 14px;
+}
+.social-ball p {
+  font-size: 12px;
+  color: #8b795a;
+}
+.social-empty {
+  padding: 22px;
+  border: 1px dashed #d6dfd8;
+  border-radius: 14px;
+  font-size: 13px;
+  color: #87928a;
+  text-align: center;
+}
+.social-effect {
+  position: absolute;
+  top: 5%;
+  right: 8%;
+  font-size: 36px;
+  pointer-events: none;
+  animation: social-bounce 0.8s ease-in-out infinite alternate;
+}
+@keyframes social-bounce {
+  from {
+    transform: translateY(4px) rotate(-10deg);
+  }
+  to {
+    transform: translateY(-8px) rotate(10deg);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .social-effect {
+    animation: none;
+  }
+}

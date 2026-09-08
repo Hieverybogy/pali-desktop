@@ -1,0 +1,251 @@
+.interaction-stage {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+.kiss-visitor,
+.kiss-host {
+  position: absolute;
+  top: var(--top);
+  width: var(--size);
+  height: var(--size);
+}
+.interaction-stage .penguin {
+  width: 100%;
+  height: 100%;
+}
+.kiss-host {
+  left: var(--target);
+}
+.kiss-visitor {
+  left: 0;
+  animation: kiss-visit 6.5s linear both;
+  z-index: 2;
+}
+.kiss-lean {
+  width: 100%;
+  height: 100%;
+  transform-origin: 50% 80%;
+  animation: kiss-lean 6.5s ease-in-out both;
+}
+.kiss-hearts {
+  position: absolute;
+  left: calc(var(--target) - var(--size) * 0.18);
+  top: calc(var(--top) + var(--size) * 0.05);
+  font-size: calc(var(--size) * 0.21);
+  color: #ed7d9c;
+  animation: kiss-hearts 6.5s ease-in-out both;
+  z-index: 3;
+}
+.kiss-caption {
+  position: absolute;
+  left: max(8px, calc(var(--target) - var(--size) * 0.7));
+  top: max(6px, calc(var(--top) - 30px));
+  padding: 7px 14px;
+  border-radius: 16px;
+  background: #fff6f8;
+  color: #ad607a;
+  font-size: 12px;
+  white-space: nowrap;
+}
+@keyframes kiss-visit {
+  0% {
+    transform: translateX(calc(-1 * var(--size)));
+  }
+  31%,
+  66% {
+    transform: translateX(var(--approach));
+  }
+  100% {
+    transform: translateX(calc(-1 * var(--size)));
+  }
+}
+@keyframes kiss-lean {
+  0%,
+  30%,
+  67%,
+  100% {
+    transform: rotate(0);
+  }
+  39%,
+  57% {
+    transform: rotate(13deg) translateX(8%);
+  }
+  48% {
+    transform: rotate(8deg) translateX(5%);
+  }
+}
+@keyframes kiss-hearts {
+  0%,
+  30%,
+  70%,
+  100% {
+    opacity: 0;
+    transform: translateY(12px) scale(0.6);
+  }
+  40%,
+  58% {
+    opacity: 1;
+    transform: translateY(-8px) scale(1.1);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .kiss-visitor {
+    animation: none;
+    transform: translateX(var(--approach));
+  }
+  .kiss-lean {
+    animation: none;
+  }
+  .kiss-hearts {
+    animation: none;
+    opacity: 1;
+  }
+}
+/* Each interaction shares the entrance/exit, but performs its own action. */
+.action-tea .kiss-lean,
+.action-cheer .kiss-lean,
+.action-ball .kiss-lean,
+.action-ball-invite .kiss-lean,
+.action-ball-end .kiss-lean {
+  animation: none;
+}
+.action-tea .kiss-hearts {
+  top: calc(var(--top) + var(--size) * 0.5);
+  animation-name: offer-tea;
+}
+.action-hug .kiss-lean {
+  animation-name: hug-close;
+}
+.action-hug.performing .kiss-host {
+  transform: translateX(-5%);
+}
+.action-hug.performing .wing-left {
+  transform: rotate(30deg);
+}
+.action-hug.performing .wing-right {
+  animation: none;
+  transform: rotate(-30deg);
+}
+.action-cheer.performing .character {
+  animation: cheer-jump 0.45s ease-in-out infinite;
+}
+.action-cheer .kiss-hearts {
+  animation-name: cheer-confetti;
+}
+.action-ball .kiss-hearts {
+  display: none;
+}
+.racket {
+  position: absolute;
+  top: calc(var(--top) + var(--size) * 0.55);
+  font-size: calc(var(--size) * 0.22);
+  opacity: 0;
+  z-index: 4;
+}
+.racket-left {
+  left: calc(var(--target) - var(--size) * 0.13);
+}
+.racket-right {
+  left: calc(var(--target) + var(--size) * 0.42);
+  transform: scaleX(-1);
+}
+.performing .racket {
+  opacity: 1;
+}
+.rally-ball {
+  position: absolute;
+  left: calc(var(--target) - var(--size) * 0.03);
+  top: calc(var(--top) + var(--size) * 0.47);
+  width: calc(var(--size) * 0.07);
+  height: calc(var(--size) * 0.07);
+  border-radius: 50%;
+  background: #ffb54c;
+  box-shadow: 0 1px 3px #714d3c66;
+  opacity: 0;
+  z-index: 5;
+}
+.performing .rally-ball {
+  opacity: 1;
+  animation: rally 0.55s ease-in-out infinite alternate;
+}
+.action-ball-invite.performing .wing-right,
+.action-ball-end.performing .wing-right {
+  animation: wave 0.3s ease-in-out infinite alternate;
+}
+@keyframes offer-tea {
+  0%,
+  30% {
+    opacity: 0;
+    transform: translateX(-35px);
+  }
+  38% {
+    opacity: 1;
+    transform: translateX(-20px);
+  }
+  58%,
+  66% {
+    opacity: 1;
+    transform: translateX(28px) translateY(-8px);
+  }
+  75%,
+  100% {
+    opacity: 0;
+    transform: translateX(28px);
+  }
+}
+@keyframes hug-close {
+  0%,
+  30%,
+  70%,
+  100% {
+    transform: none;
+  }
+  40%,
+  60% {
+    transform: translateX(20%) rotate(8deg);
+  }
+  50% {
+    transform: translateX(22%) rotate(4deg);
+  }
+}
+@keyframes cheer-jump {
+  50% {
+    transform: translateY(-12px) rotate(-5deg);
+  }
+}
+@keyframes cheer-confetti {
+  0%,
+  30%,
+  75%,
+  100% {
+    opacity: 0;
+    transform: scale(0.5);
+  }
+  38%,
+  60% {
+    opacity: 1;
+    transform: translateY(-20px) scale(1.2);
+  }
+  48% {
+    transform: translateY(-10px) scale(0.9);
+  }
+}
+@keyframes rally {
+  from {
+    transform: translate(0, 0);
+  }
+  to {
+    transform: translate(calc(var(--size) * 0.48), -12px);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .interaction-stage .kiss-lean,
+  .interaction-stage .kiss-hearts,
+  .interaction-stage .character,
+  .interaction-stage .wing-right,
+  .interaction-stage .rally-ball {
+    animation: none;
+  }
+}

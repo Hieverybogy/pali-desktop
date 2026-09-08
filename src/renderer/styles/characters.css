@@ -1,0 +1,134 @@
+/* Shared character artwork and chooser. */
+.avatar {
+  display: contents;
+}
+.change-pet {
+  margin-left: 9px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: #ffffffb0;
+  color: #526b59;
+  font-size: 11px;
+}
+.change-pet:hover {
+  background: #fff;
+}
+.change-pet span {
+  margin-left: 7px;
+}
+.pet-picker {
+  width: min(750px, calc(100vw - 48px));
+  max-height: calc(100vh - 60px);
+  padding: 27px;
+  border: 1px solid #e2e9e3;
+  border-radius: 22px;
+  color: #293b3c;
+  background: #f9faf8;
+  box-shadow: 0 24px 90px #243b3b30;
+}
+.pet-picker::backdrop {
+  background: #1e343750;
+  backdrop-filter: blur(5px);
+}
+.picker-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 22px;
+}
+.picker-header h2 {
+  font-size: 24px;
+  margin: 9px 0;
+}
+.picker-header p,
+.picker-hint {
+  font-size: 11px;
+  color: #87958c;
+}
+.picker-close {
+  flex-shrink: 0;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  font-size: 22px;
+  background: #eaf0e9;
+  color: #6e8173;
+}
+.pet-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 12px;
+}
+.pet-card {
+  position: relative;
+  padding: 7px 7px 12px;
+  background: #fff;
+  border: 2px solid transparent;
+  box-shadow: 0 2px 7px #263b3310;
+  border-radius: 13px;
+  text-align: left;
+  color: inherit;
+  transition:
+    border-color 0.15s,
+    transform 0.15s;
+}
+.pet-card:hover {
+  transform: translateY(-3px);
+  border-color: #bacfbd;
+}
+.pet-card.chosen {
+  border-color: #6d947b;
+  background: #f6faf5;
+}
+.pet-thumbnail {
+  aspect-ratio: 1;
+  border-radius: 8px;
+  overflow: hidden;
+}
+.pet-thumbnail svg {
+  width: 100%;
+  height: 100%;
+}
+.pet-card-label {
+  display: flex;
+  justify-content: space-between;
+  gap: 3px;
+  align-items: center;
+  margin: 9px 2px 5px;
+}
+.pet-card-label strong {
+  font-size: 12px;
+  font-weight: 600;
+}
+.pet-card-label span {
+  font-size: 9px;
+  color: #8c9990;
+}
+.selection-marker {
+  display: block;
+  font-size: 8px;
+  letter-spacing: 1px;
+  color: #8d9d92;
+  margin: 0 2px;
+}
+.chosen .selection-marker {
+  color: #568366;
+  letter-spacing: 0;
+}
+.picker-hint {
+  margin: 19px 0 0;
+  text-align: center;
+  line-height: 1.8;
+}
+.thumbnail .character,
+.thumbnail .eye-open {
+  animation: none;
+}
+@media (max-width: 850px) {
+  .pet-grid {
+    gap: 8px;
+  }
+  .pet-picker {
+    padding: 22px;
+  }
+}

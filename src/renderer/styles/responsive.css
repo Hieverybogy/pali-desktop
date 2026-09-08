@@ -1,0 +1,18 @@
+@media (max-width: 850px) {
+  .dashboard aside {
+    width: 166px;
+    padding: 32px 18px;
+  }
+  .content {
+    padding: 30px 24px;
+  }
+  .online {
+    display: none;
+  }
+  .hero-copy {
+    padding-left: 22px;
+  }
+  .habitat .penguin {
+    width: 225px;
+  }
+}

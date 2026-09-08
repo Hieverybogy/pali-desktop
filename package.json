@@ -1,0 +1,42 @@
+{
+  "name": "pali-desktop",
+  "version": "0.3.0",
+  "private": true,
+  "description": "Pali · 住在桌面上的小夥伴",
+  "main": "src/main/index.cjs",
+  "scripts": {
+    "dev": "concurrently -k \"vite --host 127.0.0.1\" \"wait-on http://127.0.0.1:5173 && electron . --dev\"",
+    "dev:second": "wait-on http://127.0.0.1:5173 && electron . --dev --instance=second",
+    "start:second": "electron . --instance=second",
+    "build": "npm run typecheck && vite build",
+    "start": "electron .",
+    "preview": "vite --host 127.0.0.1",
+    "test": "node --test tests/unit/*.test.cjs",
+    "dist:mac": "npm run build && electron-builder --mac --publish never",
+    "dist:win": "npm run build && electron-builder --win --publish never",
+    "typecheck": "tsc --noEmit",
+    "format": "prettier --write src tests docs README.md electron-builder.json vite.config.ts tsconfig.json index.html package.json .prettierrc.json",
+    "format:check": "prettier --check src tests docs README.md electron-builder.json vite.config.ts tsconfig.json index.html package.json .prettierrc.json",
+    "check": "npm run typecheck && npm test && npm run format:check"
+  },
+  "dependencies": {
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "@vitejs/plugin-react": "^4.3.4",
+    "concurrently": "^9.1.2",
+    "electron": "^44.2.0",
+    "electron-builder": "^26.15.3",
+    "prettier": "^3.9.6",
+    "typescript": "^5.7.3",
+    "vite": "^6.1.0",
+    "wait-on": "^8.0.2"
+  },
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "author": "Pali"
+}

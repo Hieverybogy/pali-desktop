@@ -1,0 +1,186 @@
+[
+  {
+    "id": "penguin",
+    "name": "小派",
+    "english": "PIP",
+    "species": "企鵝",
+    "description": "來自南極的慢性子。",
+    "detail": "喜歡散步，也喜歡偷偷看著你。",
+    "traits": ["好奇心滿滿", "黏人但不打擾"],
+    "color": "#425767",
+    "dark": "#243442",
+    "light": "#fffef9",
+    "accent": "#ef9375",
+    "background": "#eaf1e9",
+    "hitRegions": []
+  },
+  {
+    "id": "cat",
+    "name": "奶糖",
+    "english": "TOFFEE",
+    "species": "橘貓",
+    "description": "把每一天都過成星期天。",
+    "detail": "最擅長曬太陽，偶爾監督你工作。",
+    "traits": ["慵懶小主管", "摸摸就開心"],
+    "color": "#e5b06b",
+    "dark": "#be8147",
+    "light": "#fff3db",
+    "accent": "#859e8b",
+    "background": "#f7eedf",
+    "hitRegions": [
+      [91, 68, 17, 28],
+      [190, 68, 17, 28],
+      [218, 202, 19, 24]
+    ]
+  },
+  {
+    "id": "shiba",
+    "name": "豆豆",
+    "english": "MAME",
+    "species": "柴犬",
+    "description": "一顆永遠充滿電的小太陽。",
+    "detail": "只要你在，就是最開心的地方。",
+    "traits": ["元氣滿分", "忠實小跟班"],
+    "color": "#cf9764",
+    "dark": "#9e683e",
+    "light": "#fff4df",
+    "accent": "#648cac",
+    "background": "#f3eae1",
+    "hitRegions": [
+      [91, 68, 17, 28],
+      [190, 68, 17, 28],
+      [222, 197, 18, 21]
+    ]
+  },
+  {
+    "id": "rabbit",
+    "name": "糯米",
+    "english": "MOCHI",
+    "species": "白兔",
+    "description": "像一團剛做好的軟糯麻糬。",
+    "detail": "豎起長耳朵，聽你今天的故事。",
+    "traits": ["溫柔傾聽", "軟綿綿"],
+    "color": "#eee9e2",
+    "dark": "#c8c0b9",
+    "light": "#fffdf9",
+    "accent": "#d7a0b5",
+    "background": "#f6eaf0",
+    "hitRegions": [
+      [101, 53, 19, 39],
+      [181, 53, 19, 39],
+      [205, 215, 20, 20]
+    ]
+  },
+  {
+    "id": "fox",
+    "name": "楓楓",
+    "english": "MAPLE",
+    "species": "狐狸",
+    "description": "從秋天森林溜出來的小機靈。",
+    "detail": "尾巴裡藏著一點點淘氣。",
+    "traits": ["靈感雷達", "森林來客"],
+    "color": "#df8c57",
+    "dark": "#9f533b",
+    "light": "#fff1dc",
+    "accent": "#749b87",
+    "background": "#f5e8dd",
+    "hitRegions": [
+      [91, 68, 17, 28],
+      [190, 68, 17, 28],
+      [225, 203, 22, 35]
+    ]
+  },
+  {
+    "id": "panda",
+    "name": "竹竹",
+    "english": "BAMBOO",
+    "species": "熊貓",
+    "description": "吃飽、睡好，煩惱慢慢變小。",
+    "detail": "陪你用自己的速度過日子。",
+    "traits": ["慢生活專家", "佛系陪伴"],
+    "color": "#f0eee4",
+    "dark": "#39454b",
+    "light": "#fffdf3",
+    "accent": "#8da976",
+    "background": "#eaf0e4",
+    "hitRegions": [
+      [88, 76, 25, 25],
+      [192, 76, 25, 25]
+    ]
+  },
+  {
+    "id": "bear",
+    "name": "栗子",
+    "english": "CHESTNUT",
+    "species": "棕熊",
+    "description": "一個有溫度的毛茸茸擁抱。",
+    "detail": "累的時候，就靠過來休息一下。",
+    "traits": ["安心感滿滿", "蜂蜜愛好者"],
+    "color": "#b78a6a",
+    "dark": "#805a45",
+    "light": "#ead4b8",
+    "accent": "#d8ab59",
+    "background": "#f0e9e1",
+    "hitRegions": [
+      [88, 76, 25, 25],
+      [192, 76, 25, 25]
+    ]
+  },
+  {
+    "id": "frog",
+    "name": "泡泡",
+    "english": "BUBBLES",
+    "species": "青蛙",
+    "description": "雨後荷葉上的快樂小居民。",
+    "detail": "用一個小跳躍，趕跑你的壞心情。",
+    "traits": ["樂天派", "雨天也快樂"],
+    "color": "#91ba83",
+    "dark": "#5e8f69",
+    "light": "#eaf2c9",
+    "accent": "#e9b967",
+    "background": "#eaf2e2",
+    "hitRegions": [
+      [105, 84, 30, 30],
+      [175, 84, 30, 30]
+    ]
+  },
+  {
+    "id": "owl",
+    "name": "星星",
+    "english": "ASTRA",
+    "species": "貓頭鷹",
+    "description": "替你收藏深夜裡的好點子。",
+    "detail": "圓圓的眼睛，裝滿大大的好奇。",
+    "traits": ["夜間夥伴", "靈感收藏家"],
+    "color": "#9d94b7",
+    "dark": "#69637f",
+    "light": "#f1e9e0",
+    "accent": "#dfb866",
+    "background": "#eeebf5",
+    "hitRegions": [
+      [89, 79, 15, 20],
+      [191, 79, 15, 20]
+    ]
+  },
+  {
+    "id": "dragon",
+    "name": "芽芽",
+    "english": "SPROUT",
+    "species": "小龍",
+    "description": "還不會噴火，先學會陪伴。",
+    "detail": "小翅膀裡，裝著勇敢的大夢想。",
+    "traits": ["勇敢練習生", "奇幻小夥伴"],
+    "color": "#80b6ad",
+    "dark": "#4d8a86",
+    "light": "#dcecc8",
+    "accent": "#d7b274",
+    "background": "#e4f0ed",
+    "hitRegions": [
+      [96, 66, 14, 24],
+      [184, 66, 14, 24],
+      [60, 155, 13, 20],
+      [220, 155, 13, 20],
+      [226, 221, 23, 13]
+    ]
+  }
+]
